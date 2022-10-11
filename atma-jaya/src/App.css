@@ -41,3 +41,13 @@
   margin-right: 15px;
 }
 
+.list-nama {
+  text-align: center;
+  justify-content: center;
+  list-style-position: inside;
+}
+
+.ini-input {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}

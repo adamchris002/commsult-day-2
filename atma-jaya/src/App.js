@@ -13,6 +13,7 @@ class App extends React.Component {
       name: "",
       age: 20,
       hobby: "Playing Games",
+      editIndex: null,
     };
   }
 
@@ -42,11 +43,17 @@ class App extends React.Component {
   };
 
   deleteName = (names) => () => {
-    const result = this.state.names.filter(name => {
-      return name !== names
+    const result = this.state.names.filter(index => {
+      return index !== names
     })
     this.setState({names: result})
   };
+
+  editname = () => {
+    var element = document.createElement("input")
+    var main_element = document.getElementById("Nama")
+    main_element.replaceChild(element, main_element.childNodes[0]);
+  }
 
   render() {
     return (
@@ -54,11 +61,13 @@ class App extends React.Component {
         {this.state.names.map((names) => {
           return (
             <div>
-              <ul className="testing">
+              <ul className="list-nama">
                 <li>
                   <span>
-                    <label className="label-nama">{names}</label>
+                    {/* parameter names itu dari index yang ada di map */}
+                    <label className="label-nama" id="Nama">{names}</label>
                     <button onClick={this.deleteName(names)}>Delete</button>
+                    <button onClick={this.editname()}>Edit</button>
                   </span>
                 </li>
               </ul>
@@ -80,6 +89,7 @@ class App extends React.Component {
         <input
           value={this.state.name}
           onChange={(event) => this.setState({ name: event.target.value })}
+          className="ini-input"
         />
         <br />
         <button onClick={this.addName}>Add Name</button>
