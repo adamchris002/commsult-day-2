@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+.label-nama {
+  margin-right: 15px;
+}
+
