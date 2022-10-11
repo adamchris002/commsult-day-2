@@ -11,9 +11,10 @@ class App extends React.Component {
     this.state = {
       names: ["Adam Christoper"],
       name: "",
+      editName: "",
       age: 20,
       hobby: "Playing Games",
-      editIndex: null,
+      editIndex: -1,
     };
   }
 
@@ -43,36 +44,82 @@ class App extends React.Component {
   };
 
   deleteName = (names) => () => {
-    const result = this.state.names.filter(index => {
-      return index !== names
-    })
-    this.setState({names: result})
+    const result = this.state.names.filter((index) => {
+      return index !== names;
+    });
+    this.setState({ names: result });
   };
 
-  editname = () => {
-    var element = document.createElement("input")
-    var main_element = document.getElementById("Nama")
-    main_element.replaceChild(element, main_element.childNodes[0]);
-  }
+  editName = (index, name) => () => {
+    this.setState({ editIndex: index, editName: name });
+    
+  };
+
+  cancel = () => {
+    console.log("cancel");
+    this.setState({ editIndex: -1 });
+  };
+
+  changeName = () => {
+    // tapi ini indexnya mulainya bukannya dari 0?
+    this.setState({editIndex: -1, names: this.state.names.map((nama, index) => {
+      if (index === this.state.editIndex) {
+        return this.state.editName;
+      }
+      else {
+        return nama;
+      }
+    })})
+  };
 
   render() {
+    console.log("editIndex", this.state.editIndex);
     return (
       <div className="App">
-        {this.state.names.map((names) => {
-          return (
-            <div>
-              <ul className="list-nama">
-                <li>
-                  <span>
-                    {/* parameter names itu dari index yang ada di map */}
-                    <label className="label-nama" id="Nama">{names}</label>
-                    <button onClick={this.deleteName(names)}>Delete</button>
-                    <button onClick={this.editname()}>Edit</button>
-                  </span>
-                </li>
-              </ul>
-            </div>
-          );
+        {this.state.names.map((names, index) => {
+          if (index === this.state.editIndex) {
+            return (
+              <div>
+                <ul className="list-nama">
+                  <li>
+                    <span>
+                      {/* parameter names itu dari index yang ada di map */}
+                      <input className="input-nama" value={this.state.editName} onChange={(event) => this.setState({editName: event.target.value })}/>
+                      <button
+                        className="tombol-delete"
+                        onClick={this.changeName}
+                      >
+                        Save
+                      </button>
+                      <button onClick={this.cancel}>Cancel</button>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            );
+          } else {
+            return (
+              <div>
+                <ul className="list-nama">
+                  <li>
+                    <span>
+                      {/* parameter names itu dari index yang ada di map */}
+                      <label className="label-nama" id="Nama">
+                        {names}
+                      </label>
+                      <button
+                        className="tombol-delete"
+                        onClick={this.deleteName(names)}
+                      >
+                        Delete
+                      </button>
+                      <button onClick={this.editName(index, names)}>Edit</button>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            );
+          }
         })}
         <h1>Hello my Name is {this.state.name}</h1>
         <h3>My hobby is {this.state.hobby}</h3>
@@ -94,6 +141,7 @@ class App extends React.Component {
         <br />
         <button onClick={this.addName}>Add Name</button>
         <button onClick={this.deleteName}>Delete</button>
+        <br />
       </div>
     );
   }
