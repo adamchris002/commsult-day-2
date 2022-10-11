@@ -1,5 +1,6 @@
 import React from "react";
 import AgeComponent from "./AgeComponent";
+import axios from 'axios';
 
 //function Home() diganti menjadi class Home extends React.Component
 class Home extends React.Component {
@@ -14,7 +15,18 @@ class Home extends React.Component {
       age: 20,
       hobby: "Playing Games",
       editIndex: -1,
+      fruitId: 0,
+      fruitName: "",
     };
+  }
+
+  componentDidMount() {
+    axios.get("/api/fruit/all")
+      .then(res => {
+        this.setState({
+          names: res.data.map(fruit => fruit.name)
+        })
+      })
   }
 
   componentDidUpdate() {
@@ -40,6 +52,7 @@ class Home extends React.Component {
     this.setState({
       names: [...this.state.names, this.state.name],
     });
+    axios.put("api/fruits/all")
   };
 
   deleteName = (names) => () => {
@@ -71,6 +84,18 @@ class Home extends React.Component {
     })})
   };
 
+  handleSearch = () => {
+    axios.get(`/api/fruit/${this.state.fruitId}`).then(res => {
+      this.setState({
+        fruitName: res.data.name
+      })
+    }).catch(err =>  {
+      this.setState({
+        fruitName: "Not Found"
+      })
+    })
+  }
+
   render() {
     console.log("editIndex", this.state.editIndex);
     return (
@@ -98,7 +123,9 @@ class Home extends React.Component {
             );
           } else {
             return (
+              
               <div>
+                
                 <ul className="list-nama">
                   <li>
                     <span>
@@ -140,6 +167,11 @@ class Home extends React.Component {
         <br />
         <button onClick={this.addName}>Add Name</button>
         <button onClick={this.deleteName}>Delete</button>
+        <br/><br/>
+        <input className="fruit-search-bar" placeholder="Search for a fruit" onChange={(event) => this.setState({ fruitId: event.target.value })}/>
+        <button onClick={this.handleSearch}>Search</button>
+        <br/>
+        <label>{this.state.fruitName}</label>
         <br />
         <button className="tombol-logout" onClick={() => this.props.changePage("login")}>Logout</button>
       </div>
